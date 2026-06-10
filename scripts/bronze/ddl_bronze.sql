@@ -5,7 +5,7 @@
 --              to store data as-is from source
 --              systems without any transformation
 -- Schema     : datawarehouse_bronze
--- Author     : Hare
+-- Author     : Hare2
 -- Created    : 2024
 -- ------------------------------------------------
 -- Tables Created:
@@ -14,116 +14,106 @@
 --     - crm_prd_info        (Product Info)
 --     - crm_sales_details   (Sales Details)
 --   ERP Source:
---     - erp_cust_az12       (Customer Data)
 --     - erp_loc_a101        (Location Data)
+--     - erp_cust_az12       (Customer Data)
 --     - erp_px_cat_g1v2     (Product Category)
 -- ------------------------------------------------
 -- Notes      : - All date columns stored as VARCHAR
 --                to preserve raw values
---               - DROP TABLE IF EXISTS used before
+--              - DROP TABLE IF EXISTS used before
 --                each CREATE for safe re-running
 -- ================================================
 
-
-
-	-- ================================================
--- Loading Bronze Layer
--- ================================================
-SET @batch_start_time = NOW();
 -- ------------------------------------------------
--- Loading CRM Tables
+-- CRM Tables
 -- ------------------------------------------------
 
--- Loading: crm_cust_info
-set @start_time = now();
-TRUNCATE TABLE datawarehouse_bronze.crm_cust_info;
-LOAD DATA LOCAL INFILE 'C:/Users/hare2/Downloads/sql-data-warehouse-project/datasets/source_crm/cust_info.csv'
-INTO TABLE datawarehouse_bronze.crm_cust_info
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
-IGNORE 1 LINES;
-set @end_time =now();
-SELECT CONCAT('>> crm_cust_info Load Duration: ', TIMESTAMPDIFF(SECOND, @start_time, @end_time), ' seconds') AS '';
+-- Table: crm_cust_info
+-- Source: source_crm/cust_info.csv
+-- Desc  : Customer personal details from CRM system
+DROP TABLE IF EXISTS datawarehouse_bronze.crm_cust_info;
+CREATE TABLE datawarehouse_bronze.crm_cust_info (
+    cst_id              INT,           -- Customer ID (unique identifier)
+    cst_key             VARCHAR(50),   -- Customer key
+    cst_firstname       VARCHAR(50),   -- First name
+    cst_lastname        VARCHAR(50),   -- Last name
+    cst_marital_status  VARCHAR(50),   -- Marital status
+    cst_gndr            VARCHAR(50),   -- Gender
+    cst_create_date     VARCHAR(50)    -- Account creation date (raw)
+);
 
 -- ------------------------------------------------
 
--- Loading: crm_prd_info
-set @start_time = now();
-TRUNCATE TABLE datawarehouse_bronze.crm_prd_info;
-LOAD DATA LOCAL INFILE 'C:/Users/hare2/Downloads/sql-data-warehouse-project/datasets/source_crm/prd_info.csv'
-INTO TABLE datawarehouse_bronze.crm_prd_info
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
-IGNORE 1 LINES;
-set @end_time = now();
-SELECT CONCAT('>> crm_prd_info Load Duration: ', TIMESTAMPDIFF(SECOND, @start_time, @end_time), ' seconds') AS '';
-
-
--- ------------------------------------------------
-
--- Loading: crm_sales_details
-set @start_time = now();
-TRUNCATE TABLE datawarehouse_bronze.crm_sales_details;
-LOAD DATA LOCAL INFILE 'C:/Users/hare2/Downloads/sql-data-warehouse-project/datasets/source_crm/sales_details.csv'
-INTO TABLE datawarehouse_bronze.crm_sales_details
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
-IGNORE 1 LINES;
-set @end_time = now();
-SELECT CONCAT('>> crm_sales_details Load Duration: ', TIMESTAMPDIFF(SECOND, @start_time, @end_time), ' seconds') AS '';
-
-
--- ================================================
--- Loading ERP Tables
--- ================================================
-
--- Loading: erp_cust_az12
-set @start_time = now();
-TRUNCATE TABLE datawarehouse_bronze.erp_cust_az12;
-LOAD DATA LOCAL INFILE 'C:/Users/hare2/Downloads/sql-data-warehouse-project/datasets/source_erp/cust_az12.csv'
-INTO TABLE datawarehouse_bronze.erp_cust_az12
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
-IGNORE 1 LINES;
-set @end_time = now();
-SELECT CONCAT('>> erp_cust_az12 Load Duration: ', TIMESTAMPDIFF(SECOND, @start_time, @end_time), ' seconds') AS '';
-
+-- Table: crm_prd_info
+-- Source: source_crm/prd_info.csv
+-- Desc  : Product details from CRM system
+DROP TABLE IF EXISTS datawarehouse_bronze.crm_prd_info;
+CREATE TABLE datawarehouse_bronze.crm_prd_info (
+    prd_id        INT,           -- Product ID (unique identifier)
+    prd_key       VARCHAR(50),   -- Product key
+    prd_nm        VARCHAR(50),   -- Product name
+    prd_cost      INT,           -- Product cost
+    prd_line      VARCHAR(50),   -- Product line
+    prd_start_dt  VARCHAR(50),   -- Product start date (raw)
+    prd_end_dt    VARCHAR(50)    -- Product end date (raw)
+);
 
 -- ------------------------------------------------
 
--- Loading: erp_loc_a101
+-- Table: crm_sales_details
+-- Source: source_crm/sales_details.csv
+-- Desc  : Sales transactions from CRM system
+DROP TABLE IF EXISTS datawarehouse_bronze.crm_sales_details;
+CREATE TABLE datawarehouse_bronze.crm_sales_details (
+    sls_ord_num   VARCHAR(50),   -- Sales order number
+    sls_prd_key   VARCHAR(50),   -- Product key
+    sls_cust_id   INT,           -- Customer ID
+    sls_order_dt  INT,           -- Order date (raw integer)
+    sls_ship_dt   INT,           -- Ship date (raw integer)
+    sls_due_dt    INT,           -- Due date (raw integer)
+    sls_sales     INT,           -- Sales amount
+    sls_quantity  INT,           -- Quantity sold
+    sls_price     INT            -- Price per unit
+);
 
-set @start_time = now();
-TRUNCATE TABLE datawarehouse_bronze.erp_loc_a101;
-LOAD DATA LOCAL INFILE 'C:/Users/hare2/Downloads/sql-data-warehouse-project/datasets/source_erp/loc_a101.csv'
-INTO TABLE datawarehouse_bronze.erp_loc_a101
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
-IGNORE 1 LINES;
-set @end_time = now();
-SELECT CONCAT('>> erp_loc_a101 Load Duration: ', TIMESTAMPDIFF(SECOND, @start_time, @end_time), ' seconds') AS '';
+-- ------------------------------------------------
+-- ERP Tables
+-- ------------------------------------------------
+
+-- Table: erp_loc_a101
+-- Source: source_erp/loc_a101.csv
+-- Desc  : Customer location data from ERP system
+DROP TABLE IF EXISTS datawarehouse_bronze.erp_loc_a101;
+CREATE TABLE datawarehouse_bronze.erp_loc_a101 (
+    cid    VARCHAR(50),   -- Customer ID
+    cntry  VARCHAR(50)    -- Country
+);
 
 -- ------------------------------------------------
 
--- Loading: erp_px_cat_g1v2
-set @start_time = now();
-TRUNCATE TABLE datawarehouse_bronze.erp_px_cat_g1v2;
-LOAD DATA LOCAL INFILE 'C:/Users/hare2/Downloads/sql-data-warehouse-project/datasets/source_erp/px_cat_g1v2.csv'
-INTO TABLE datawarehouse_bronze.erp_px_cat_g1v2
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
-IGNORE 1 LINES;
-set @end_time = now();
-SELECT CONCAT('>> erp_px_cat_g1v2 Load Duration: ', TIMESTAMPDIFF(SECOND, @start_time, @end_time), ' seconds') AS '';
+-- Table: erp_cust_az12
+-- Source: source_erp/cust_az12.csv
+-- Desc  : Customer details from ERP system
+DROP TABLE IF EXISTS datawarehouse_bronze.erp_cust_az12;
+CREATE TABLE datawarehouse_bronze.erp_cust_az12 (
+    cid    VARCHAR(50),   -- Customer ID
+    bdate  VARCHAR(50),   -- Birth date (raw)
+    gen    VARCHAR(50)    -- Gender
+);
+
+-- ------------------------------------------------
+
+-- Table: erp_px_cat_g1v2
+-- Source: source_erp/px_cat_g1v2.csv
+-- Desc  : Product category details from ERP system
+DROP TABLE IF EXISTS datawarehouse_bronze.erp_px_cat_g1v2;
+CREATE TABLE datawarehouse_bronze.erp_px_cat_g1v2 (
+    id           VARCHAR(50),   -- Category ID
+    cat          VARCHAR(50),   -- Category name
+    subcat       VARCHAR(50),   -- Sub category name
+    maintenance  VARCHAR(50)    -- Maintenance flag
+);
 
 -- ================================================
--- Bronze Layer Loading Complete!
+-- End of DDL Script: Bronze Layer Tables
 -- ================================================
-SET @batch_end_time = NOW();
-SELECT CONCAT('>> Total Bronze Layer Duration: ', TIMESTAMPDIFF(SECOND, @batch_start_time, @batch_end_time), ' seconds') AS '';
