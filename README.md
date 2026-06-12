@@ -63,7 +63,7 @@ These insights empower stakeholders with key business metrics, enabling strategi
 
 | Layer | Technology |
 |---|---|
-| Database | SQL Server |
+| Database | MYSQL |
 | Data Sources | CSV Files (ERP & CRM) |
 | Analytics | SQL |
 | Documentation | Markdown |
