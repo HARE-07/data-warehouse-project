@@ -179,11 +179,9 @@ SELECT * FROM datawarehouse_gold.dim_products  LIMIT 10;
 SELECT * FROM datawarehouse_gold.fact_sales    LIMIT 10;
 
 
-📊 Project Stats
+'''📊 Project Stats
 
-MetricValueSource Systems2 (CRM + ERP)Source CSV Files6Bronze Tables6Silver Tables6Gold Views3 (2 dimensions + 1 fact)Customer Records18,485Transformations Applied15+SQL Functions Used20+Quality Checks12+
-        ▼
-Gold Views ─────────────────────────────────────────────┐
+MetricValueSource Systems2 (CRM + ERP)Source CSV Files6Bronze Tables6Silver Tables6Gold Views3 (2 dimensions + 1 fact)Customer Records18,485Transformations Applied15+SQL Functions Used20+Quality Checks12+'''
   dim_customers        (complete customer profile)       │
   dim_products         (current active products only)   │  BUSINESS
   fact_sales           (transactions with surr. keys)   │  READY
