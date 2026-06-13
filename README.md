@@ -124,6 +124,64 @@ Silver Tables ──────────────────────
         │                                               ┘
         │  CREATE VIEW (Gold Layer)
         │  LEFT JOINs + Surrogate Keys
+
+
+
+⚡ Getting Started
+
+Prerequisites
+
+
+MySQL 8.0 or above (ROW_NUMBER window function required)
+MySQL Workbench
+CSV source files from CRM and ERP systems
+
+
+Step-by-Step Setup
+
+Step 1 — Create databases
+
+sqlCREATE DATABASE IF NOT EXISTS datawarehouse_bronze;
+CREATE DATABASE IF NOT EXISTS datawarehouse_silver;
+CREATE DATABASE IF NOT EXISTS datawarehouse_gold;
+
+Step 2 — Create Bronze tables
+
+bashRun: scripts/bronze/ddl_bronze.sql
+
+Step 3 — Load Bronze data
+
+bashRun: scripts/bronze/load_bronze.sql
+-- Updates path to your local CSV location first!
+
+Step 4 — Create Silver tables
+
+bashRun: scripts/silver/ddl_silver.sql
+
+Step 5 — Load Silver data
+
+sql-- Run the stored procedure
+CALL datawarehouse_silver.load_silver();
+
+Step 6 — Create Gold views
+
+bashRun: scripts/gold/ddl_gold.sql
+
+Step 7 — Run quality checks
+
+bashRun: quality_checks/quality_checks_silver.sql
+Run: quality_checks/quality_checks_gold.sql
+
+Step 8 — Query the data warehouse
+
+sqlSELECT * FROM datawarehouse_gold.dim_customers LIMIT 10;
+SELECT * FROM datawarehouse_gold.dim_products  LIMIT 10;
+SELECT * FROM datawarehouse_gold.fact_sales    LIMIT 10;
+
+
+📊 Project Stats
+
+MetricValueSource Systems2 (CRM + ERP)Source CSV Files6Bronze Tables6Silver Tables6Gold Views3 (2 dimensions + 1 fact)Customer Records18,485Transformations Applied15+SQL Functions Used20+Quality Checks12+
         ▼
 Gold Views ─────────────────────────────────────────────┐
   dim_customers        (complete customer profile)       │
