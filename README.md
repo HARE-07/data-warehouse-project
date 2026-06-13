@@ -62,6 +62,7 @@ Raw data from two separate source systems (CRM and ERP) was siloed, dirty, and i
 
 This project follows the Medallion Architecture — an industry-standard pattern used by companies like Databricks, Snowflake, and Azure.
 
+```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     SOURCE SYSTEMS                              │
 │                                                                 │
@@ -95,10 +96,9 @@ This project follows the Medallion Architecture — an industry-standard pattern
 │  Business-ready · Star Schema · Surrogate Keys · Joined         │
 │  dim_customers · dim_products · fact_sales                      │
 └─────────────────────────────────────────────────────────────────┘
-
-
+```
 🔄 Data Flow
-
+```
 CSV Files (Local Machine)
         │
         │  LOAD DATA LOCAL INFILE
@@ -130,42 +130,4 @@ Gold Views ───────────────────────
   dim_products         (current active products only)   │  BUSINESS
   fact_sales           (transactions with surr. keys)   │  READY
                                                         ┘
-
-
-🛠️ Tech Stack
-
-ComponentTechnologyPurposeDatabaseMySQL 8.0+Main data warehouse platformIDEMySQL WorkbenchQuery development & executionData SourcesCSV FilesRaw CRM & ERP dataETLSQL Stored ProceduresBronze → Silver transformationData ModelSQL ViewsSilver → Gold serving layerVersion ControlGit & GitHubCode managementDocumentationMarkdown + WordTechnical documentation
-
-
-📁 Project Structure
-
-data-warehouse-project/
-│
-├── 📂 datasets/
-│   ├── source_crm/
-│   │   ├── cust_info.csv          # Customer personal details
-│   │   ├── prd_info.csv           # Product catalog
-│   │   └── sales_details.csv      # Sales transactions
-│   └── source_erp/
-│       ├── cust_az12.csv          # Customer birthdate & gender
-│       ├── loc_a101.csv           # Customer country
-│       └── px_cat_g1v2.csv        # Product categories
-│
-├── 📂 scripts/
-│   ├── bronze/
-│   │   ├── ddl_bronze.sql         # CREATE TABLE statements
-│   │   └── load_bronze.sql        # LOAD DATA scripts
-│   ├── silver/
-│   │   ├── ddl_silver.sql         # CREATE TABLE statements
-│   │   └── load_silver.sql        # Stored procedure
-│   └── gold/
-│       └── ddl_gold.sql           # CREATE VIEW statements
-│
-├── 📂 quality_checks/
-│   ├── quality_checks_silver.sql  # Silver layer validations
-│   └── quality_checks_gold.sql    # Gold layer validations
-│
-├── 📂 docs/
-│   └── DataWarehouse_Complete_Documentation.docx
-│
-└── README.md
+```
