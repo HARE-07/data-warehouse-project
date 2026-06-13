@@ -1,3 +1,24 @@
+/*
+===============================================================================
+DDL Script: Create Gold Views
+===============================================================================
+Script Purpose:
+    This script creates views for the Gold layer in the data warehouse. 
+    The Gold layer represents the final dimension and fact tables (Star Schema)
+
+    Each view performs transformations and combines data from the Silver layer 
+    to produce a clean, enriched, and business-ready dataset.
+
+Usage:
+    - These views can be queried directly for analytics and reporting.
+===============================================================================
+*/
+
+
+-- =============================================================================
+-- Create Dimension: datawarehouse_gold.dim_customers
+-- =============================================================================
+
 DROP VIEW IF EXISTS datawarehouse_gold.dim_customer;
 
 CREATE VIEW datawarehouse_gold.dim_customer AS
@@ -24,7 +45,9 @@ select distinct gender from datawarehouse_gold.dim_customer
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+-- =============================================================================
+-- Create Dimension: datawarehouse_gold.dim_product
+-- =============================================================================
 
 drop view if exists datawarehouse_gold.dim_product;
 create view datawarehouse_gold.dim_product as
@@ -48,6 +71,11 @@ pi.prd_end_dt  as end_date
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
+-- =============================================================================
+-- Create Dimension: datawarehouse_gold.fact_sales
+-- =============================================================================
+
+
 drop view if exists datawarehouse_gold.fact_sales;
 create view datawarehouse_gold.fact_sales as
 select 
@@ -55,6 +83,7 @@ sd.sls_ord_num   as order_number,
 gp.product_key,
 gc.customer_key,
 sd.sls_order_dt  as order_date,
+    
 sd.sls_ship_dt   as ship_date,
 sd.sls_due_dt    as due_date,
 sd.sls_sales      as sales,
