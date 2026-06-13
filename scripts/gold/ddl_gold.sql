@@ -48,7 +48,7 @@ pi.prd_end_dt  as end_date
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-
+drop view if exists datawarehouse_gold.fact_sales;
 create view datawarehouse_gold.fact_sales as
 select 
 sd.sls_ord_num   as order_number,
