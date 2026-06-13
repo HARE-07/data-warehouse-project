@@ -1,3 +1,33 @@
+/*
+===============================================================================
+Stored Procedure: Load Silver Layer (Bronze -> Silver)
+===============================================================================
+Script Purpose:
+    This stored procedure performs the ETL (Extract, Transform, Load) process
+    to populate the 'datawarehouse_silver' schema tables from the
+    'datawarehouse_bronze' schema.
+    Actions Performed:
+        - Truncates Silver tables before each load
+        - Inserts transformed and cleansed data from Bronze into Silver tables
+        - Tracks load duration for each table using session variables
+        - Handles errors using DECLARE EXIT HANDLER
+
+Parameters:
+    None.
+    This stored procedure does not accept any parameters or return any values.
+
+Usage Example:
+    CALL datawarehouse_silver.load_silver();
+
+Notes:
+    - LOAD DATA cannot run inside a MySQL stored procedure
+    - Bronze layer is loaded via a separate plain SQL script
+    - Run Bronze load script first before calling this procedure
+===============================================================================
+*/
+
+
+
 DROP PROCEDURE IF EXISTS datawarehouse_silver.load_silver;
 
 DELIMITER $$
