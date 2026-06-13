@@ -22,20 +22,20 @@ CREATE TABLE datawarehouse_silver.crm_cust_info (
     cst_marital_status  VARCHAR(50),
     cst_gndr            VARCHAR(50),
     cst_create_date     DATE,
-    dwh_create_date     DATETIME DEFAULT NOW()  -- ✅ fixed typo dhw -> dwh
+    dwh_create_date     DATETIME DEFAULT NOW()  
 );
 
 -- Table: crm_prd_info
 DROP TABLE IF EXISTS datawarehouse_silver.crm_prd_info;
 CREATE TABLE datawarehouse_silver.crm_prd_info (
     prd_id          INT,
-    cat_id          VARCHAR(50),   -- ✅ added missing column
+    cat_id          VARCHAR(50),   -- 
     prd_key         VARCHAR(50),
     prd_nm          VARCHAR(50),
     prd_cost        INT,
     prd_line        VARCHAR(50),
-    prd_start_dt    DATE,          -- ✅ fixed DATETIME -> DATE
-    prd_end_dt      DATE,          -- ✅ fixed DATETIME -> DATE
+    prd_start_dt    DATE,          
+    prd_end_dt      DATE,          
     dwh_create_date DATETIME DEFAULT NOW()
 );
 
