@@ -126,7 +126,7 @@ Silver Tables ──────────────────────
         │  LEFT JOINs + Surrogate Keys
 
 
-
+```
 ⚡ Getting Started
 
 Prerequisites
