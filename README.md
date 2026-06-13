@@ -1,121 +1,171 @@
-# 🚀 Data Warehouse and Analytics Project
+🏗️ Data Warehouse & Analytics Project
 
-Welcome to the **Data Warehouse and Analytics Project** repository! 🚀
+Medallion Architecture | MySQL | ETL Pipeline | Star Schema
 
-This project demonstrates a comprehensive data warehousing and analytics solution, from building a data warehouse to generating actionable insights. Designed as a portfolio project, it highlights industry best practices in data engineering and analytics.
+<p align="center">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/SQL-FF6B35?style=for-the-badge&logo=databricks&logoColor=white"/>
+  <img src="https://img.shields.io/badge/ETL%20Pipeline-1E7145?style=for-the-badge&logo=apacheairflow&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Data%20Warehouse-1F5C99?style=for-the-badge&logo=googlecloud&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Star%20Schema-BF6000?style=for-the-badge&logo=powerbi&logoColor=white"/>
+</p>
 
----
 
-## 📋 Table of Contents
+🎯 A complete, production-style Data Warehouse built from scratch using Medallion Architecture — ingesting raw CSV data from CRM & ERP systems, transforming it through Bronze → Silver → Gold layers, and serving it as a Star Schema for business analytics.
 
-- [Project Overview](#project-overview)
-- [Project Requirements](#project-requirements)
-  - [Data Engineering – Building the Data Warehouse](#building-the-data-warehouse-data-engineering)
-  - [Data Analytics – BI & Reporting](#bi-analytics--reporting-data-analytics)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [License](#license)
-- [About Me](#about-me)
 
----
 
-## 🗂️ Project Overview
 
-This project covers the full lifecycle of a data solution:
+📋 Table of Contents
 
-- **Data Engineering**: Ingesting raw data from multiple source systems, cleansing it, and loading it into a structured SQL Server data warehouse.
-- **Data Analytics**: Writing SQL-based analytical queries to surface insights on customer behavior, product performance, and sales trends.
 
----
+Project Overview
+Architecture
+Data Flow
+Tech Stack
+Project Structure
+Layer Details
 
-## 🚀 Project Requirements
+🥉 Bronze Layer
+🥈 Silver Layer
+🥇 Gold Layer
 
-### Building the Data Warehouse (Data Engineering)
 
-#### Objective
-Develop a modern data warehouse using **SQL Server** to consolidate sales data, enabling analytical reporting and informed decision-making.
 
-#### Specifications
+Data Model — Star Schema
+SQL Features Used
+Quality Checks
+Getting Started
+Project Stats
+License
+About Me
 
-- **Data Sources**: Import data from two source systems (ERP and CRM) provided as CSV files.
-- **Data Quality**: Cleanse and resolve data quality issues prior to analysis.
-- **Integration**: Combine both sources into a single, user-friendly data model designed for analytical queries.
-- **Scope**: Focus on the latest dataset only; historization of data is not required.
-- **Documentation**: Provide clear documentation of the data model to support both business stakeholders and analytics teams.
 
----
 
-### BI: Analytics & Reporting (Data Analytics)
+🗂️ Project Overview
 
-#### Objective
-Develop SQL-based analytics to deliver detailed insights into:
+This project demonstrates a complete end-to-end Data Warehouse solution built entirely in MySQL Workbench. It covers every stage of a modern data pipeline — from raw data ingestion to business-ready analytical views.
 
-- **Customer Behavior**
-- **Product Performance**
-- **Sales Trends**
+What This Project Covers
 
-These insights empower stakeholders with key business metrics, enabling strategic decision-making.
+AreaWhat Was BuiltData EngineeringETL pipeline ingesting raw CSV data from CRM & ERP systemsData ModelingStar Schema with Dimension and Fact tablesData QualityValidation checks across all three layersAnalyticsSQL-based reporting on customers, products, and salesDocumentationFull technical documentation of every transformation
 
----
+Business Problem Solved
 
-## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Database | MYSQL |
-| Data Sources | CSV Files (ERP & CRM) |
-| Analytics | SQL |
-| Documentation | Markdown |
+Raw data from two separate source systems (CRM and ERP) was siloed, dirty, and inconsistent. This project consolidates both into a single clean, reliable data warehouse that answers key business questions about customer behavior, product performance, and sales trends.
 
----
 
-## 📁 Project Structure
 
-```
-data-warehouse-analytics/
+
+🏛️ Architecture
+
+This project follows the Medallion Architecture — an industry-standard pattern used by companies like Databricks, Snowflake, and Azure.
+
+┌─────────────────────────────────────────────────────────────────┐
+│                     SOURCE SYSTEMS                              │
+│                                                                 │
+│   📁 CRM System              📁 ERP System                      │
+│   ├── cust_info.csv          ├── cust_az12.csv                  │
+│   ├── prd_info.csv           ├── loc_a101.csv                   │
+│   └── sales_details.csv      └── px_cat_g1v2.csv                │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │  LOAD DATA LOCAL INFILE
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  🥉 BRONZE LAYER  (datawarehouse_bronze)                        │
+│                                                                 │
+│  Raw data stored AS-IS — no transformation                      │
+│  All dates as VARCHAR · Dirty values preserved · Audit trail    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │  Stored Procedure: load_silver()
+                      │  INSERT INTO ... SELECT
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  🥈 SILVER LAYER  (datawarehouse_silver)                        │
+│                                                                 │
+│  Cleaned · Standardized · Deduplicated · Type-converted         │
+│  TRIM · UPPER · CASE · STR_TO_DATE · ROW_NUMBER · LEAD          │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │  CREATE VIEW
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  🥇 GOLD LAYER  (datawarehouse_gold)                            │
+│                                                                 │
+│  Business-ready · Star Schema · Surrogate Keys · Joined         │
+│  dim_customers · dim_products · fact_sales                      │
+└─────────────────────────────────────────────────────────────────┘
+
+
+🔄 Data Flow
+
+CSV Files (Local Machine)
+        │
+        │  LOAD DATA LOCAL INFILE
+        ▼
+Bronze Tables ──────────────────────────────────────────┐
+  crm_cust_info        (18,485 raw customer records)    │
+  crm_prd_info         (product catalog)                │  RAW
+  crm_sales_details    (60,000+ sales transactions)     │
+  erp_cust_az12        (birthdate & gender from ERP)    │
+  erp_loc_a101         (country data from ERP)          │
+  erp_px_cat_g1v2      (product categories from ERP)   │
+        │                                               ┘
+        │  load_silver() Stored Procedure
+        │  TRUNCATE → Transform → INSERT
+        ▼
+Silver Tables ──────────────────────────────────────────┐
+  crm_cust_info        (deduplicated, cleaned)          │
+  crm_prd_info         (keys split, dates fixed)        │  CLEAN
+  crm_sales_details    (dates converted, sales fixed)   │
+  erp_cust_az12        (NAS prefix removed, dates ok)   │
+  erp_loc_a101         (country codes standardized)     │
+  erp_px_cat_g1v2      (clean as-is)                    │
+        │                                               ┘
+        │  CREATE VIEW (Gold Layer)
+        │  LEFT JOINs + Surrogate Keys
+        ▼
+Gold Views ─────────────────────────────────────────────┐
+  dim_customers        (complete customer profile)       │
+  dim_products         (current active products only)   │  BUSINESS
+  fact_sales           (transactions with surr. keys)   │  READY
+                                                        ┘
+
+
+🛠️ Tech Stack
+
+ComponentTechnologyPurposeDatabaseMySQL 8.0+Main data warehouse platformIDEMySQL WorkbenchQuery development & executionData SourcesCSV FilesRaw CRM & ERP dataETLSQL Stored ProceduresBronze → Silver transformationData ModelSQL ViewsSilver → Gold serving layerVersion ControlGit & GitHubCode managementDocumentationMarkdown + WordTechnical documentation
+
+
+📁 Project Structure
+
+data-warehouse-project/
 │
-├── datasets/               # Raw CSV source files (ERP & CRM)
-├── scripts/
-│   ├── bronze/             # Raw data ingestion scripts
-│   ├── silver/             # Data cleansing & transformation
-│   └── gold/               # Analytical data model (final layer)
-├── analytics/              # SQL analytics & reporting queries
-├── docs/                   # Data model documentation & diagrams
+├── 📂 datasets/
+│   ├── source_crm/
+│   │   ├── cust_info.csv          # Customer personal details
+│   │   ├── prd_info.csv           # Product catalog
+│   │   └── sales_details.csv      # Sales transactions
+│   └── source_erp/
+│       ├── cust_az12.csv          # Customer birthdate & gender
+│       ├── loc_a101.csv           # Customer country
+│       └── px_cat_g1v2.csv        # Product categories
+│
+├── 📂 scripts/
+│   ├── bronze/
+│   │   ├── ddl_bronze.sql         # CREATE TABLE statements
+│   │   └── load_bronze.sql        # LOAD DATA scripts
+│   ├── silver/
+│   │   ├── ddl_silver.sql         # CREATE TABLE statements
+│   │   └── load_silver.sql        # Stored procedure
+│   └── gold/
+│       └── ddl_gold.sql           # CREATE VIEW statements
+│
+├── 📂 quality_checks/
+│   ├── quality_checks_silver.sql  # Silver layer validations
+│   └── quality_checks_gold.sql    # Gold layer validations
+│
+├── 📂 docs/
+│   └── DataWarehouse_Complete_Documentation.docx
+│
 └── README.md
-```
-
----
-
-## ⚡ Getting Started
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/data-warehouse-analytics.git
-   cd data-warehouse-analytics
-   ```
-
-2. **Set up SQL Server** – Ensure you have SQL Server (or SQL Server Express) installed and running.
-
-3. **Load source data** – Place the ERP and CRM CSV files in the `datasets/` folder.
-
-4. **Run scripts in order**
-   - Execute scripts in `scripts/bronze/` to ingest raw data
-   - Execute scripts in `scripts/silver/` to cleanse and transform
-   - Execute scripts in `scripts/gold/` to build the final data model
-
-5. **Run analytics** – Execute queries in the `analytics/` folder to generate reports and insights.
-
----
-
-## 🛡️ License
-
-This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and share this project with proper attribution.
-
----
-
-## 🌟 About Me
-
-Hi there! I'm **Hare**, a passionate student exploring the world of data engineering and analytics. This project is part of my learning journey to build real-world data skills.
-
-Feel free to connect, ask questions, or contribute to the project. Happy learning! 🎉
